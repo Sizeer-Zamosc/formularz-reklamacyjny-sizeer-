@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Formularz reklamacyjny - Sizeer Zamość</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .form-section { border: 1px solid #000; padding: 15px; margin-bottom: 20px; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, textarea, select { width: 100%; padding: 6px; margin-top: 4px; }
+    h2 { margin-top: 0; }
+    .barcodes { display: flex; gap: 40px; margin-top: 20px; }
+    .print-button { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+    .two-columns { display: flex; gap: 20px; }
+    .two-columns > div { flex: 1; }
+  </style>
+</head>
+<body>
+
+<h2>Zgłoszenie reklamacyjne – Sizeer Zamość Galeria Twierdza</h2>
+
+<div class="form-section">
+  <p><strong>Sklep:</strong> Sizeer ZAMOŚĆ GALERIA TWIERDZA</p>
+  <p><strong>Adres:</strong> Ul. Przemysłowa 10, 22-400 Zamość</p>
+  <p><strong>Email:</strong> sizeerzamosc@o2.pl | <strong>Telefon:</strong> +84 567 87 54</p>
+  <p><strong>Sporządzono w dniu:</strong> <span id="dataSporzadzenia"></span></p>
+</div>
+
+<form id="reklamacjaForm">
+  <div class="form-section">
+    <div class="two-columns">
+      <div>
+        <label>Imię i nazwisko klienta</label>
+        <input name="klient" required>
+        <label>Adres</label>
+        <input name="adres" required>
+        <label>Telefon</label>
+        <input name="telefon" required>
+        <label>Email</label>
+        <input name="email" required>
+      </div>
+      <div>
+        <label>Data nabycia towaru</label>
+        <input type="date" name="data_nabycia" required>
+        <label>Nazwa towaru</label>
+        <input name="towar" required>
+        <label>Kod / Rozmiar</label>
+        <input name="kod" required>
+        <label>Cena</label>
+        <input name="cena" required>
+      </div>
+    </div>
+
+    <label>Dowód sprzedaży (numer paragonu)</label>
+    <input name="paragon" id="paragon" required oninput="generujKodParagonu()">
+
+    <label>Wady stwierdzone przez klienta</label>
+    <textarea name="wady" rows="3" required></textarea>
+
+    <label>Data stwierdzenia wady</label>
+    <input type="date" name="data_wady" required>
+
+    <label>Żądanie reklamującego</label>
+    <select name="zadanie" required>
+      <option value="">-- wybierz --</option>
+      <option value="naprawa">naprawa</option>
+      <option value="obniżenie ceny">obniżenie ceny</option>
+      <option value="wymiana">wymiana</option>
+      <option value="odstąpienie od umowy">odstąpienie od umowy</option>
+    </select>
+
+    <label>Inne żądania klienta</label>
+    <textarea name="inne_zadania" rows="2"></textarea>
+  </div>
+
+  <div class="form-section">
+    <label>Data odbioru reklamacji</label>
+    <input type="date" name="data_odbioru">
+
+    <label>Potwierdzenie odbioru towaru / równowartości</label>
+    <textarea name="potwierdzenie" rows="2"></textarea>
+
+    <p>Podpis sprzedawcy i pieczątka: _____________________</p>
+    <p>Podpis klienta: _____________________</p>
+  </div>
+
+  <div class="barcodes">
+    <div>
+      <p><strong>Numer reklamacji:</strong></p>
+      <svg id="kodReklamacji"></svg>
+    </div>
+    <div>
+      <p><strong>Kod paragonu:</strong></p>
+      <svg id="kodParagonu"></svg>
+    </div>
+  </div>
+
+  <button type="button" class="print-button" onclick="window.print()">Drukuj</button>
+</form>
+
+<script>
+  const data = new Date();
+  document.getElementById('dataSporzadzenia').textContent = data.toLocaleDateString("pl-PL");
+
+  const nrReklamacji = 'R' + Date.now().toString().slice(-6);
+  JsBarcode("#kodReklamacji", nrReklamacji, {format: "CODE128", width: 2, height: 50});
+
+  function generujKodParagonu() {
+    const paragon = document.getElementById('paragon').value;
+    if (paragon.trim() !== "") {
+      JsBarcode("#kodParagonu", paragon.trim(), {format: "CODE128", width: 2, height: 50});
+    }
+  }
+</script>
+
+</body>
+</html>
